@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Letter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Kristi&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --book-width: 700px;
+            --book-height: 500px;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background: radial-gradient(ellipse at center, #4c1d35, #1a1a1a);
+            overflow: hidden;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ec4899' fill-opacity='0.04'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v-1zm-7 5h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zM0 95h1v-1H0v1zm7 0h1v-1H7v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1z'/%3E%3Cpath d='M6 95h4v1H6v-1zm7 5h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zM94 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zm-7 0h1v-1h-1v1zM0 0h1v-1H0v1zm7 0h1v-1H7v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1zm7 0h1v-1h-1v1z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        #particles-js { position: absolute; width: 100%; height: 100%; z-index: 0; }
+        .cursive-font { font-family: 'Kristi', cursive; font-size: 2.8rem; line-height: 1; }
+
+        /* --- Envelope --- */
+        .envelope-wrapper {
+            perspective: 1000px;
+            z-index: 10;
+            transition: opacity 0.5s ease-out, transform 0.8s ease-in-out;
+        }
+        .envelope {
+            position: relative;
+            width: 340px; height: 220px;
+            background-color: #f8bbd0;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px -10px rgba(236, 72, 153, 0.3), 0 15px 30px -15px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: transform 0.6s ease-in-out;
+        }
+        .envelope:before { /* Flap */
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #f4a5c1; border-radius: 12px 12px 0 0;
+            transform-origin: top; transition: transform 0.6s 0.2s ease-in-out;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 55%, 50% 100%, 0% 55%);
+            z-index: 3;
+        }
+        .envelope.opened:before { transform: rotateX(180deg); }
+        .heart-seal {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 45px; height: 45px;
+            background: #d81b60; z-index: 4;
+            clip-path: polygon(50% 100%, 0 45%, 0 0, 100% 0, 100% 45%);
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease;
+        }
+        .heart-seal:before, .heart-seal:after {
+            content: ''; position: absolute; width: 45px; height: 45px;
+            border-radius: 50px; background: #d81b60;
+        }
+        .heart-seal:before { top: -22.5px; left: -22.5px; }
+        .heart-seal:after { top: -22.5px; left: 22.5px; }
+
+        /* --- New Book Structure --- */
+        .book-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: var(--book-width);
+            height: var(--book-height);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.8);
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease-in-out;
+            z-index: 20;
+            perspective: 2500px;
+            padding: .5%;
+        }
+        .book {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            left: -50%;
+        }
+        .page {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            left: 50%;
+            transform-origin: left center;
+            transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+            transform-style: preserve-3d;
+            background-color: #fffaf0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+        .page .front, .page .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: #fffaf0;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVvoJFYZJHz9fN4d3d2dHZtdHRvb29sbm5rqJNna2xxcXJoaGhoaGhrqqpeY2Zubm5na21pcHBnq65lZ2ZpaWmZmaZBYgK4AAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAVVJREFUOI0vVdtqgzAUFEsfCARBwVX7/d+0hQhZ6nrs2Y3/h6sChyCBEESb2p3R3ENl9PDRpfN0OOCdcgUTdtrdEpG3bS6b5vG8ryPGnJAuYYi96aUeRTuE+bBD8uUPdGgrmSpCNQGvj2G_tIsbplEDuGgGfE6BGUnwexgQ4uRT4k/S7QUfXg5M4qPe3gCZEaA/yV3P4iM2BBHk6hs4T/Y/BCgK20TrCzJ2m2Y+2hxkE4W+s+qj2a9iVpQVIwZQK4wVFFG4IuP4gMBzL0yL0iJJ4Yy4yqYqLrqv8BOG3wYFTu8wKxG4TqC9B0/EMK5eQ3M4WwU2Z/gC72EwSAwXKRd2aBwQkLhVjY2YGyDkQY24csmBygvN20iGyDhyyUbvQI015goYOfA5a/a/AF/x+eNyGvJJYv5B37z1e3lB28sLgAAAABJRU5ErkJggg==');
+        }
+        .page .back {
+            transform: rotateY(180deg);
+        }
+        .book-cover-back, .book-cover {
+             position: absolute;
+             width: 50%;
+             height: 100%;
+             top: 0;
+             background-color: #f4a5c1;
+             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .book-cover {
+            left: 0;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+        .book-cover-back {
+            left: 50%;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        .book-controls {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 100;
+        }
+        .control-btn {
+            background: rgba(248, 187, 208, 0.8); border: none; color: #4c1d35;
+            padding: 10px 20px; border-radius: 50px; cursor: pointer;
+            font-size: 1.2rem; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .control-btn:hover { background: #f8bbd0; transform: scale(1.1); }
+        .control-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* --- State Changes --- */
+        body.letter-open .envelope-wrapper { transform: translateY(-150%) scale(0.5); opacity: 0; pointer-events: none; }
+        body.letter-open .book-container { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: all; }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        #instruction { animation: pulse 2.5s infinite; }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div id="envelope-container" class="flex flex-col items-center">
+        <div class="envelope-wrapper" id="envelope-wrapper">
+            <div class="envelope" id="envelope">
+                <div class="heart-seal"></div>
+            </div>
+        </div>
+        <div id="instruction" class="text-pink-200 text-center mt-8 text-lg font-light tracking-wider">Click the envelope to open</div>
+    </div>
+
+    <div class="book-container" id="book-container">
+        <div class="book" id="book">
+            <div class="book-cover"></div>
+            
+            <!-- Page 1 -->
+            <div class="page" id="p1" style="z-index: 4;">
+                <div class="front">
+                     <h1 class="text-3xl font-bold text-pink-600 mb-6">Happy Birthday & Happy Monthsary, My Love ❤️</h1>
+                     <p class="text-lg">My love, today is so special...</p>
+                </div>
+                <div class="back">
+                    <p class="text-lg leading-relaxed">You are the biggest blessing in my life, and I thank God for you every single day. I know things haven’t been easy lately...</p>
+                </div>
+            </div>
+            <!-- Page 2 -->
+            <div class="page" id="p2" style="z-index: 3;">
+                <div class="front">
+                    <p class="text-lg leading-relaxed">That thought hurts me, because all I want is to make you feel secure and happy. But even in those moments of weakness, you’ve stayed.</p>
+                </div>
+                <div class="back">
+                    <p class="text-lg leading-relaxed">I want you to know that I won’t stop fighting for us. I’ll do everything I can to provide, to improve, and to become the best man you need me to be.</p>
+                </div>
+            </div>
+            <!-- Page 3 -->
+            <div class="page" id="p3" style="z-index: 2;">
+                <div class="front">
+                    <p class="text-lg leading-relaxed">On your birthday, my only wish is for you to feel cherished. I may not have much in my hands, but in my heart, I have everything for you.</p>
+                </div>
+                <div class="back">
+                     <p class="text-lg leading-relaxed">Happy Birthday, my love. Happy Monthsary, too. Someday, these struggles will be proof of how strong our love is. I love you, in all ways. Always. ❤️</p>
+                </div>
+            </div>
+             <!-- Page 4 -->
+            <div class="page" id="p4" style="z-index: 1;">
+                <div class="front text-center">
+                    <p class="cursive-font text-pink-600 text-6xl mt-8">Love, Lyle</p>
+                </div>
+                <div class="back flex items-center justify-center">
+                    <svg class="w-24 h-24 text-pink-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                </div>
+            </div>
+            <div class="book-cover-back"></div>
+        </div>
+        <div class="book-controls">
+            <button id="prev-btn" class="control-btn">‹</button>
+            <button id="close-btn" class="control-btn">Close</button>
+            <button id="next-btn" class="control-btn">›</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', { particles: { number: { value: 25 }, shape: { type: "char", character: "❤" }, color: { value: "#ec4899" }, opacity: { value: 0.4, random: true, anim: { speed: 0.8, opacity_min: 0.1 } }, size: { value: 18, random: true }, move: { enable: true, speed: 1, direction: "top", random: true, out_mode: "out" } } });
+
+        const envelope = document.getElementById('envelope');
+        const instruction = document.getElementById('instruction');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const closeBtn = document.getElementById('close-btn');
+        const book = document.getElementById('book');
+        const pages = document.querySelectorAll('.page');
+        
+        let currentLocation = 0;
+        const numPages = pages.length;
+        const maxLocation = numPages + 1;
+
+        const updateButtons = () => {
+            prevBtn.disabled = currentLocation === 0;
+            nextBtn.disabled = currentLocation === maxLocation;
+        };
+
+        const openBook = () => {
+            document.body.classList.add('letter-open');
+            envelope.classList.add('opened');
+            instruction.style.opacity = '0';
+            book.style.transform = 'translateX(50%)';
+            prevBtn.style.transform = 'translateX(-180px)';
+            nextBtn.style.transform = 'translateX(180px)';
+        };
+
+        const closeBook = (isAtBeginning) => {
+            if (isAtBeginning) {
+                document.body.classList.remove('letter-open');
+                envelope.classList.remove('opened');
+                instruction.style.opacity = '1';
+            }
+            book.style.transform = 'translateX(0%)';
+            prevBtn.style.transform = 'translateX(0px)';
+            nextBtn.style.transform = 'translateX(0px)';
+        };
+
+        const goNextPage = () => {
+            if (currentLocation < maxLocation) {
+                if (currentLocation === 0) {
+                    openBook();
+                } else if (currentLocation <= numPages) {
+                    pages[currentLocation - 1].classList.add('flipped');
+                    pages[currentLocation - 1].style.zIndex = currentLocation;
+                }
+                currentLocation++;
+            }
+             updateButtons();
+        };
+
+        const goPrevPage = () => {
+            if (currentLocation > 0) {
+                if (currentLocation <= 1) {
+                    closeBook(true);
+                } else if (currentLocation <= maxLocation) {
+                    pages[currentLocation - 2].classList.remove('flipped');
+                    pages[currentLocation - 2].style.zIndex = numPages - (currentLocation - 2);
+                }
+                currentLocation--;
+            }
+            updateButtons();
+        };
+        
+        envelope.addEventListener('click', goNextPage);
+        
+        closeBtn.addEventListener('click', () => {
+            // Animate closing by repeatedly going to the previous page
+            const closeInterval = setInterval(() => {
+                if (currentLocation > 0) {
+                    goPrevPage();
+                } else {
+                    clearInterval(closeInterval);
+                }
+            }, 400); // Adjust timing for a pleasant animation speed
+        });
+
+        nextBtn.addEventListener('click', goNextPage);
+        prevBtn.addEventListener('click', goPrevPage);
+
+        updateButtons();
+    </script>
+</body>
+</html>
