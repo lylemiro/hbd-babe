@@ -117,6 +117,12 @@
         .page .back {
             transform: rotateY(180deg);
         }
+        .photo-page img {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
         .book-cover-back, .book-cover {
              position: absolute;
              width: 50%;
@@ -173,48 +179,69 @@
         </div>
         <div id="instruction" class="text-pink-200 text-center mt-8 text-lg font-light tracking-wider">Click the envelope to open</div>
     </div>
+    
+    <audio id="bg-music" loop>
+        <source src="https://archive.org/download/IrisGooGooDolls/Iris%20-%20Goo%20Goo%20Dolls.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <div class="book-container" id="book-container">
         <div class="book" id="book">
             <div class="book-cover"></div>
             
-            <!-- Page 1 -->
-            <div class="page" id="p1" style="z-index: 4;">
+            <!-- Letter Pages -->
+            <div class="page" id="p1" style="z-index: 6;">
                 <div class="front">
                      <h1 class="text-3xl font-bold text-pink-600 mb-6">Happy Birthday & Happy Monthsary, My Love ❤️</h1>
                      <p class="text-lg">My love, today is so special...</p>
                 </div>
                 <div class="back">
-                    <p class="text-lg leading-relaxed">You are the biggest blessing in my life, and I thank God for you every single day. I know things haven’t been easy lately...</p>
+                    <p class="text-lg leading-relaxed">You are the biggest blessing in my life... I know things haven’t been easy lately...</p>
                 </div>
             </div>
-            <!-- Page 2 -->
-            <div class="page" id="p2" style="z-index: 3;">
+            <div class="page" id="p2" style="z-index: 5;">
                 <div class="front">
-                    <p class="text-lg leading-relaxed">That thought hurts me, because all I want is to make you feel secure and happy. But even in those moments of weakness, you’ve stayed.</p>
+                    <p class="text-lg leading-relaxed">That thought hurts me... But even in those moments of weakness, you’ve stayed.</p>
                 </div>
                 <div class="back">
-                    <p class="text-lg leading-relaxed">I want you to know that I won’t stop fighting for us. I’ll do everything I can to provide, to improve, and to become the best man you need me to be.</p>
+                    <p class="text-lg leading-relaxed">I want you to know that I won’t stop fighting for us...</p>
                 </div>
             </div>
-            <!-- Page 3 -->
-            <div class="page" id="p3" style="z-index: 2;">
+            <div class="page" id="p3" style="z-index: 4;">
                 <div class="front">
-                    <p class="text-lg leading-relaxed">On your birthday, my only wish is for you to feel cherished. I may not have much in my hands, but in my heart, I have everything for you.</p>
+                    <p class="text-lg leading-relaxed">On your birthday, my only wish is for you to feel cherished... In my heart, I have everything for you.</p>
                 </div>
                 <div class="back">
-                     <p class="text-lg leading-relaxed">Happy Birthday, my love. Happy Monthsary, too. Someday, these struggles will be proof of how strong our love is. I love you, in all ways. Always. ❤️</p>
+                     <p class="text-lg leading-relaxed">Happy Birthday, my love... I love you, in all ways. Always. ❤️</p>
                 </div>
             </div>
-             <!-- Page 4 -->
-            <div class="page" id="p4" style="z-index: 1;">
+             <div class="page" id="p4" style="z-index: 3;">
                 <div class="front text-center">
                     <p class="cursive-font text-pink-600 text-6xl mt-8">Love, Lyle</p>
+                </div>
+                <div class="back flex items-center justify-center">
+                    <h2 class="text-3xl font-bold text-pink-500">Us Throughout the Year</h2>
+                </div>
+            </div>
+
+            <!-- Photo Album Pages -->
+            <div class="page photo-page" id="p5" style="z-index: 2;">
+                <div class="front">
+                    <img src="https://placehold.co/300x400/f8bbd0/4c1d35?text=Our+First+Date" alt="Photo 1">
+                </div>
+                <div class="back">
+                    <img src="https://placehold.co/300x400/f8bbd0/4c1d35?text=That+Funny+Trip" alt="Photo 2">
+                </div>
+            </div>
+            <div class="page photo-page" id="p6" style="z-index: 1;">
+                <div class="front">
+                    <img src="https://placehold.co/300x400/f8bbd0/4c1d35?text=Holiday+Memories" alt="Photo 3">
                 </div>
                 <div class="back flex items-center justify-center">
                     <svg class="w-24 h-24 text-pink-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
                 </div>
             </div>
+
             <div class="book-cover-back"></div>
         </div>
         <div class="book-controls">
@@ -235,6 +262,7 @@
         const closeBtn = document.getElementById('close-btn');
         const book = document.getElementById('book');
         const pages = document.querySelectorAll('.page');
+        const music = document.getElementById('bg-music');
         
         let currentLocation = 0;
         const numPages = pages.length;
@@ -252,6 +280,16 @@
             book.style.transform = 'translateX(50%)';
             prevBtn.style.transform = 'translateX(-180px)';
             nextBtn.style.transform = 'translateX(180px)';
+            
+            // FIX: Handle the promise returned by play() to avoid unhandled rejection errors.
+            const playPromise = music.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    // Autoplay was prevented or interrupted.
+                    // We can safely ignore this error.
+                    console.log("Audio playback failed or was interrupted.", error);
+                });
+            }
         };
 
         const closeBook = (isAtBeginning) => {
@@ -259,6 +297,8 @@
                 document.body.classList.remove('letter-open');
                 envelope.classList.remove('opened');
                 instruction.style.opacity = '1';
+                music.pause();
+                music.currentTime = 0;
             }
             book.style.transform = 'translateX(0%)';
             prevBtn.style.transform = 'translateX(0px)';
@@ -294,14 +334,13 @@
         envelope.addEventListener('click', goNextPage);
         
         closeBtn.addEventListener('click', () => {
-            // Animate closing by repeatedly going to the previous page
             const closeInterval = setInterval(() => {
                 if (currentLocation > 0) {
                     goPrevPage();
                 } else {
                     clearInterval(closeInterval);
                 }
-            }, 400); // Adjust timing for a pleasant animation speed
+            }, 400);
         });
 
         nextBtn.addEventListener('click', goNextPage);
